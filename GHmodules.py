@@ -4,10 +4,11 @@ Created on Fri Mar 22 10:37:38 2019
 
 @author: kmpoo
 """
+import csv
 import requests
 from time import sleep
 
-PW_CSV = 'C:/Users/USEREN/Dropbox/HEC/Python/PW/PW_GitHub.csv'
+PW_CSV = 'C:/Users/kmpoo/Dropbox/HEC/Python/PW/PW_GitHub.csv'
 TRIP = 0
 
 def getGitHubapi(url):
