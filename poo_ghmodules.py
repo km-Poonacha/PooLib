@@ -12,7 +12,7 @@ from time import sleep
 
 TRIP = 0
 
-def getGitHubapi(url,PW_CSV,LOG_CSV):
+def getGitHubapi(url,PW_CSV,LOG_CSV, header = None):
     """This function uses the requests.get function to make a GET request to the GitHub api
     TRIP flag is used to toggle GitHub accounts. The max rate for searches is 30 per hr per account"""
     global TRIP
@@ -25,13 +25,13 @@ def getGitHubapi(url,PW_CSV,LOG_CSV):
         for pw in PW_handle:
             PW_list.append(pw)
     if TRIP == 0:
-        repo_req = requests.get(url, auth=(PW_list[0][0], PW_list[0][1]))
+        repo_req = requests.get(url, auth=(PW_list[0][0], PW_list[0][1]), headers = header)
         TRIP = 1
     elif TRIP == 1:
-        repo_req = requests.get(url, auth=(PW_list[1][0], PW_list[1][1]))
+        repo_req = requests.get(url, auth=(PW_list[1][0], PW_list[1][1]), headers = header)
         TRIP = 2
     else:
-        repo_req = requests.get(url, auth=(PW_list[2][0], PW_list[2][1]))        
+        repo_req = requests.get(url, auth=(PW_list[2][0], PW_list[2][1]), headers = header)        
         TRIP = 0
         
     if repo_req.status_code == 200: 
@@ -52,13 +52,13 @@ def getGitHubapi(url,PW_CSV,LOG_CSV):
             with open(LOG_CSV, 'at', encoding = 'utf-8', newline ="") as loglist:
                 log_handle = csv.writer(loglist)
                 log_handle.writerow(["Error accessing url",url,repo_req.status_code,repo_json['message']])
-            return 0   
+            return None   
         else:
             print("Error code = UNKNOWN ",". Error message = UNKNOWN")
             with open(LOG_CSV, 'at', encoding = 'utf-8', newline ="") as loglist:
                 log_handle = csv.writer(loglist)
                 log_handle.writerow(["Error accessing url","UNKNOWN","UNKNOWN"])
-            return 
+            return None
 
 def ghpaginate(req):   
     """This function checks the response packet header to see if there is a link for the "next" page. Returns the link if next page exists else None """
