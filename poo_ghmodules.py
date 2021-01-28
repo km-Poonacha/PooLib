@@ -48,7 +48,7 @@ def getGitHubapi(url,PW_CSV,LOG_CSV, header = None):
         print("Error accessing url = ",url)
         repo_json = repo_req.json()
         print("Error code = ",repo_req.status_code,". Error message = ",repo_json['message'])
-        if repo_req:
+        if repo_req.status_code:
             with open(LOG_CSV, 'at', encoding = 'utf-8', newline ="") as loglist:
                 log_handle = csv.writer(loglist)
                 log_handle.writerow(["Error accessing url",url,repo_req.status_code,repo_json['message']])
@@ -78,8 +78,8 @@ def ghpaginate(req):
     
 def ghparse_row(repo_json, *items, prespace = 0):
     """ Create row"""
-    repo_row = [None]
-    if prespace:
+    repo_row = list()
+    if prespace > 0:
         for i in range(int(prespace)):
             repo_row.append("")
     for item in items:  
@@ -102,6 +102,12 @@ def ghparse_row(repo_json, *items, prespace = 0):
         else:
             repo_row.append("Not Found")
     return repo_row
+
+def gettoken(token_file):
+    """" Get the GH token from a text file"""
+    with open(token_file, 'rb') as f:
+        token = f.read().replace('\n', '')
+    return token
 
 if __name__ == '__main__':
   main()
